@@ -1,0 +1,6 @@
+.terraform
+*.tfstate
+*.tfstate.backup
+TODO.txt
+petLambda-get.py.zip
+petLambda-set.py.zip
