@@ -125,14 +125,14 @@ resource "aws_lambda_function" "lambda_function_get" {
 # https://developer.hashicorp.com/terraform/tutorials/aws/lambda-api-gateway
 
 resource "aws_apigatewayv2_api" "api_pyset" {
-    name                = "pyget-lambda-pyget-gw"
+    name                = "pyset-lambda-pyset-gw"
     protocol_type       = "HTTP"
 }
 
 resource "aws_apigatewayv2_stage" "api_pyset" {
     api_id = aws_apigatewayv2_api.api_pyset.id
     
-    name        = "pyget-lambda-stage"
+    name        = "pyset-lambda-stage"
     auto_deploy = true
 
     access_log_settings {
@@ -156,7 +156,7 @@ resource "aws_apigatewayv2_stage" "api_pyset" {
 resource "aws_apigatewayv2_integration" "pyset_integration" {
     api_id = aws_apigatewayv2_api.api_pyset.id
 
-    integration_uri         = aws_lambda_function.lambda_function_get.invoke_arn
+    integration_uri         = aws_lambda_function.lambda_function_set.invoke_arn
     integration_type        = "AWS_PROXY"
     integration_method      = "POST"
 
@@ -165,7 +165,7 @@ resource "aws_apigatewayv2_integration" "pyset_integration" {
 resource "aws_apigatewayv2_route" "pyset_route" {
     api_id = aws_apigatewayv2_api.api_pyset.id
 
-    route_key = "GET /pet"
+    route_key = "POST /pet"
     target    = "integrations/${aws_apigatewayv2_integration.pyset_integration.id}"
 }
 
