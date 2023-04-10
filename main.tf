@@ -15,57 +15,70 @@ resource "aws_dynamodb_table" "pets-dynamodb-table" {
     }
 }
 
-# Allow Lambda to assume the role
-data "aws_iam_policy_document" "lambda_assume_role_policy" {
-  statement {
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-
-    actions = ["sts:AssumeRole"]
-  }
-}
-
 # Create the policy which allows read and write access to our Pets dynamodb table.
-data "aws_iam_policy_document" "policy_data" {
+resource "aws_iam_role_policy" "dynamodb_policy_data" {
     
-        statement {
-            sid = "ReadWriteTable"
+    name = "dynamodb_policy"
+    role = aws_iam_role.db_role.id
 
-            actions = [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem"
-            ]
-
-            resources = ["${aws_dynamodb_table.pets-dynamodb-table.arn}"]
-        }
+    policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+            {
+                Action = [
+                    "dynamodb:BatchGetItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:Scan",
+                    "dynamodb:BatchWriteItem",
+                    "dynamodb:PutItem",
+                    "dynamodb:UpdateItem"
+                ]
+                Effect = "Allow"
+                Resource = ["${aws_dynamodb_table.pets-dynamodb-table.arn}"]
+            }    
+        ]
+})
 }
 
-resource "aws_iam_policy" "policy" {
-    name        = "iam_policy"
-    policy      = data.aws_iam_policy_document.policy_data.json
-}
 
-resource "aws_iam_role_policy_attachment" "db_attachment" {
-    role                = aws_iam_role.db_role.name
-    policy_arn          = aws_iam_policy.policy.arn
+# Create the policy which allows lambda to log to cloudwatch
+resource "aws_iam_role_policy" "cloudwatch_policy_data" {
+    
+    name = "cloudwatch_policy"
+    role = aws_iam_role.db_role.id
+
+    policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+            {
+                Action = [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                ]
+                Effect = "Allow"
+                Resource = "arn:aws:logs:*:*:*"
+
+            }
+        ]
+    })
 }
 
 resource "aws_iam_role" "db_role" {
-    name                = "db-role"
-    assume_role_policy  = data.aws_iam_policy_document.lambda_assume_role_policy.json
-
-    inline_policy {
-        policy = data.aws_iam_policy_document.policy_data.json
-    }
+    name                = "db_role"
+    assume_role_policy  = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+            {
+                Action = ["sts:AssumeRole"]
+                Effect  = "Allow"
+                Sid     = ""
+                Principal = {
+                    Service = "lambda.amazonaws.com"
+                }
+            }
+        ]
+    })
 }
 
 data "archive_file" "lambda_pycode_plset" {
