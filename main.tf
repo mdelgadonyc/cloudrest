@@ -58,7 +58,6 @@ resource "aws_iam_role_policy" "cloudwatch_policy_data" {
                 ]
                 Effect = "Allow"
                 Resource = "arn:aws:logs:*:*:*"
-
             }
         ]
     })
@@ -124,19 +123,22 @@ resource "aws_lambda_function" "lambda_function_get" {
 # Deploy Serverless Applications with AWS Lambda and API Gateway
 # https://developer.hashicorp.com/terraform/tutorials/aws/lambda-api-gateway
 
-resource "aws_apigatewayv2_api" "api_pyset" {
-    name                = "api-pyset-gw"
+# replace api_pyset and api_pyget with api_py
+# replace api-pyset-gw and api-pyget-gw with api-py-gw
+
+resource "aws_apigatewayv2_api" "api_py" {
+    name                = "api-py-gw"
     protocol_type       = "HTTP"
 }
 
-resource "aws_apigatewayv2_stage" "api_pyset" {
-    api_id = aws_apigatewayv2_api.api_pyset.id
+resource "aws_apigatewayv2_stage" "api_py" {
+    api_id = aws_apigatewayv2_api.api_py.id
     
-    name        = "pyset-lambda-stage"
+    name        = "py-lambda-stage"
     auto_deploy = true
 
     access_log_settings {
-        destination_arn = aws_cloudwatch_log_group.api_setgw.arn
+        destination_arn = aws_cloudwatch_log_group.api_gw.arn
 
         format = jsonencode({
             requestId               = "$context.requestId"
@@ -154,23 +156,37 @@ resource "aws_apigatewayv2_stage" "api_pyset" {
 }
 
 resource "aws_apigatewayv2_integration" "pyset_integration" {
-    api_id = aws_apigatewayv2_api.api_pyset.id
+    api_id = aws_apigatewayv2_api.api_py.id
 
     integration_uri         = aws_lambda_function.lambda_function_set.invoke_arn
     integration_type        = "AWS_PROXY"
     integration_method      = "POST"
+}
 
+resource "aws_apigatewayv2_integration" "pyget_integration" {
+    api_id = aws_apigatewayv2_api.api_py.id
+
+    integration_uri         = aws_lambda_function.lambda_function_get.invoke_arn
+    integration_type        = "AWS_PROXY"
+    integration_method      = "POST"
 }
 
 resource "aws_apigatewayv2_route" "pyset_route" {
-    api_id = aws_apigatewayv2_api.api_pyset.id
+    api_id = aws_apigatewayv2_api.api_py.id
 
     route_key = "POST /pet"
     target    = "integrations/${aws_apigatewayv2_integration.pyset_integration.id}"
 }
 
-resource "aws_cloudwatch_log_group" "api_setgw" {
-    name = "/aws/api-gw/${aws_apigatewayv2_api.api_pyset.name}"
+resource "aws_apigatewayv2_route" "pyget_route" {
+    api_id = aws_apigatewayv2_api.api_py.id
+
+    route_key = "GET /pet"
+    target    = "integrations/${aws_apigatewayv2_integration.pyget_integration.id}"
+}
+
+resource "aws_cloudwatch_log_group" "api_gw" {
+    name = "/aws/api-gw/${aws_apigatewayv2_api.api_py.name}"
 
     retention_in_days = 5
 }
@@ -181,61 +197,7 @@ resource "aws_lambda_permission" "api_setgw" {
     function_name   = aws_lambda_function.lambda_function_set.function_name
     principal       = "apigateway.amazonaws.com"
 
-    source_arn      = "${aws_apigatewayv2_api.api_pyset.execution_arn}/*/*"
-}
-
-
-## API Gateway setup for the pyget lambda function
-
-resource "aws_apigatewayv2_api" "api_pyget" {
-    name                = "api-pyget-gw"
-    protocol_type       = "HTTP"
-}
-
-resource "aws_apigatewayv2_stage" "api_pyget" {
-    api_id = aws_apigatewayv2_api.api_pyget.id
-    
-    name        = "pyget-lambda-stage"
-    auto_deploy = true
-
-    access_log_settings {
-        destination_arn = aws_cloudwatch_log_group.api_getgw.arn
-
-        format = jsonencode({
-            requestId               = "$context.requestId"
-            sourceIp                = "$context.identity.sourceIp"
-            requestTime             = "$context.requestTime"
-            protocol                = "$context.protocol"
-            httpMethod              = "$context.httpMethod"
-            resourcePath            = "$context.resourcePath"
-            routeKey                = "$context.routeKey"
-            status                  = "$context.status"
-            responseLength          = "$context.responseLength"
-            integrationErrorMessage = "$context.integrationErrorMessage"
-        })
-    }
-}
-
-resource "aws_apigatewayv2_integration" "pyget_integration" {
-    api_id = aws_apigatewayv2_api.api_pyget.id
-
-    integration_uri         = aws_lambda_function.lambda_function_get.invoke_arn
-    integration_type        = "AWS_PROXY"
-    integration_method      = "POST"
-
-}
-
-resource "aws_apigatewayv2_route" "pyget_route" {
-    api_id = aws_apigatewayv2_api.api_pyget.id
-
-    route_key = "GET /pet"
-    target    = "integrations/${aws_apigatewayv2_integration.pyget_integration.id}"
-}
-
-resource "aws_cloudwatch_log_group" "api_getgw" {
-    name = "/aws/api-gw/${aws_apigatewayv2_api.api_pyget.name}"
-
-    retention_in_days = 5
+    source_arn      = "${aws_apigatewayv2_api.api_py.execution_arn}/*/*"
 }
 
 resource "aws_lambda_permission" "api_getgw" {
@@ -244,5 +206,5 @@ resource "aws_lambda_permission" "api_getgw" {
     function_name   = aws_lambda_function.lambda_function_get.function_name
     principal       = "apigateway.amazonaws.com"
 
-    source_arn      = "${aws_apigatewayv2_api.api_pyget.execution_arn}/*/*"
+    source_arn      = "${aws_apigatewayv2_api.api_py.execution_arn}/*/*"
 }

@@ -9,11 +9,11 @@ output "lambda_set_function" {
 output "api_get_base_url" {
     description = "Base URL for get API Gateway Stage"
 
-    value       = aws_apigatewayv2_stage.api_pyget.invoke_url
+    value       = aws_apigatewayv2_stage.api_py.invoke_url
 }
 
-output "api_set_base_url" {
-    description = "Base URL for get API Gateway Stage"
-
-    value       = aws_apigatewayv2_stage.api_pyset.invoke_url
-}
+#output "api_set_base_url" {
+#    description = "Base URL for get API Gateway Stage"
+#
+#    value       = aws_apigatewayv2_stage.api_pyset.invoke_url
+#}
