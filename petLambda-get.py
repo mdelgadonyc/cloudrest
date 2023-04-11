@@ -13,30 +13,40 @@ def lambda_handler(event, context):
 
     logger.info('got event{}->queryStringParameters'.format(event['queryStringParameters']))
 
-    
-    #dict = json.loads(event['body'])
-    #dict = json.loads(event['queryStringParameters'])
     print('event->queryStringParameters: ', json.dumps(event['queryStringParameters']))
+    
     dbID = json.dumps(event['queryStringParameters']["id"])
-    print(dbID)
-
+    dbID = dbID.replace('"', "")    # remove the literal quotation marks around our ID.
+    
     response = table.get_item(
-        Key={
-            #'id': dbID
-            'id':'31337'
-       }
+        Key={            
+            'id': dbID
+        }
     )
+
+    bodyStr = ""
 
     if 'Item' in response:
         print(response['Item'])
+        bodyStr = json.dumps(response['Item'])
+    else:
+        bodyStr = 'Not found.'
+    
+    return {
+        'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
+        "body": bodyStr
+    }
+
+
+'''
         return {
-            #'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
-            "statusCode": "200",
-            "body": "response['Item']"
+            'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
+            "body": json.dumps(response['Item'])
         } 
     else:
         return {
             'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
             'body': 'Not found'
         }
+'''
     
