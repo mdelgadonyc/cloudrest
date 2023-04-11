@@ -37,10 +37,6 @@ def lambda_handler(event, context):
 
     return {
 
-        'statusCode': 200,
-        'body': json.dumps(dict)
-        # 'body': json.dumps(event['id']) # returning the data sent to backend lambada function as API response
-
-        #'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
-        #'body': 'Record ' + event['id'] + ' added'
+        'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
+        'body': 'Record ' + dict['id'] + ' added'
     }
