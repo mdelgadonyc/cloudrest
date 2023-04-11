@@ -17,24 +17,26 @@ def lambda_handler(event, context):
     #dict = json.loads(event['body'])
     #dict = json.loads(event['queryStringParameters'])
     print('event->queryStringParameters: ', json.dumps(event['queryStringParameters']))
+    dbID = json.dumps(event['queryStringParameters']["id"])
+    print(dbID)
 
-    return {
-        'statusCode': '200',
-        'body': json.dumps(event['queryStringParameters'])
-    }
+    response = table.get_item(
+        Key={
+            #'id': dbID
+            'id':'31337'
+       }
+    )
 
-    #response = table.get_item(
-    #    Key={
-    #        'id': dict['id']
-    #   }
-    #)
-
-    #if 'Item' in response:
-    #    return response['Item']
+    if 'Item' in response:
+        print(response['Item'])
+        return {
+            #'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
+            "statusCode": "200",
+            "body": "response['Item']"
+        } 
+    else:
+        return {
+            'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
+            'body': 'Not found'
+        }
     
-    #else:
-    #    return {
-    #    'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
-    #    #'body': 'Record ' + event['id'] + ' added'
-    #    'body': 'Not found'
-    #    }
