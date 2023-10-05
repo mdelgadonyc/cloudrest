@@ -4,17 +4,17 @@ CloudRest is a serverless API implemented on AWS using Terraform and making use 
 
 ### Installation
 
-Install aws-cli
-$ `pip install awscli --upgrade --user`
+#### Install aws-cli
+$ `pip install awscli --upgrade --user`  
 
 Note: Excellent instructions for installing Terraform on Ubuntu available at: https://computingforgeeks.com/how-to-install-terraform-on-ubuntu/
 
 ### Usage
 
-## Login to AWS Account Using AWS CLI
-$ `aws configure`
-$ `terraform init`
-$ `terraform apply`
+#### Login to AWS Account Using AWS CLI
+$ `aws configure`  
+$ `terraform init`  
+$ `terraform apply`  
 
 Note: Excellent instructions for setting up the AWS portion available at: https://linuxhint.com/install_aws_cli_ubuntu/
 
