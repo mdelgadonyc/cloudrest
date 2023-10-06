@@ -20,7 +20,7 @@ Note: Excellent instructions for setting up the AWS portion available at: https:
 
 ### Contributing
 
-Please open an issue to suggest fixes or ideas for improving Browsy
+Please open an issue to suggest fixes or ideas for improving CloudRest.
 
 ### License
 
