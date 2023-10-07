@@ -20,6 +20,8 @@ To install CloudRest locally:
     $ `pip install awscli --upgrade --user`  
 
 3. ### Install Terraform
+   $ `sudo apt install terraform`
+   
     Note: Excellent instructions for installing Terraform on Ubuntu available at:
     [https://computingforgeeks.com/how-to-install-terraform-on-ubuntu/](https://computingforgeeks.com/how-to-install-terraform-on-ubuntu/)
 
