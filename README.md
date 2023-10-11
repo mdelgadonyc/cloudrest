@@ -37,11 +37,11 @@ To install CloudRest locally:
 
 2. ### Use an API platform like [Postman](https://www.postman.com/downloads/) to set and get data via the endpoint returned by Terraform  
    #### Set data via POST request  
-       Post request to the URL and endpoint returned by Terraform (ie. https://kfd5dbmxqf.execute-api.us-east-1.amazonaws.com/py-lambda-stage/pet)  
+       Use Postman to submit a Post request to the URL and endpoint returned by Terraform (ie. https://kfd5dbmxqf.execute-api.us-east-1.amazonaws.com/py-lambda-stage/pet)  
        With the data as JSON in the body (i.e. {"id": "1", "name": "Spot", "breed": "chihuahua", "gender": "male", "owner": "Hector Ortiz", "birthday": "05112020"} )  
 
    #### Retrieve data via GET request   
-       Get request to the URL and endpoint returned by Terraform, and the id number of the stored data item appended at the end
+       Use Postman to submit a Get request to the URL and endpoint returned by Terraform, and the id number of the stored data item appended at the end
        (ie. https://kfd5dbmxqf.execute-api.us-east-1.amazonaws.com/py-lambda-stage/pet?id=1)
 
 
