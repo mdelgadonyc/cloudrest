@@ -11,8 +11,12 @@ output "api_get_base_url" {
     value       = aws_apigatewayv2_stage.api_py.invoke_url
 }
 
-#output "api_set_base_url" {
-#    description = "Base URL for get API Gateway Stage"
-#
-#    value       = aws_apigatewayv2_stage.api_pyset.invoke_url
-#}
+output "get_api_endpoint" {
+    description = "API endpoint that goes after the base URL to get values"
+    value       = aws_apigatewayv2_route.pyget_route.route_key
+}
+
+output "set_api_endpoint" {
+    description = "API endpoint that goes after the base URL to set values"
+    value       = aws_apigatewayv2_route.pyset_route.route_key
+}
