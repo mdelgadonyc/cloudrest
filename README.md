@@ -17,7 +17,7 @@ To install CloudRest locally:
 1. ### Clone this repository
 
 2. ### Install aws-cli
-    $ `pip install awscli --upgrade --user`  
+    $ `pip3 install awscli --upgrade --user`  
 
 3. ### Install Terraform
     Note: Excellent instructions for installing Terraform on Ubuntu available at:
@@ -32,6 +32,16 @@ To install CloudRest locally:
 
     Note: Excellent instructions for setting up the AWS portion available at: 
     [https://linuxhint.com/install_aws_cli_ubuntu/](https://linuxhint.com/install_aws_cli_ubuntu/)
+
+2. ### Use an API platform like [Postman](https://www.postman.com/downloads/) to set and get data via the endpoint returned by Terraform  
+   #### Set data via POST request  
+       Post request to the URL and endpoint returned by Terraform (ie. https://kfd5dbmxqf.execute-api.us-east-1.amazonaws.com/py-lambda-stage/pet)  
+       With the data as JSON in the body (i.e. {"id": "1", "name": "Spot", "breed": "chihuahua", "gender": "male", "owner": "Hector Ortiz", "birthday": "05112020"} )  
+
+   #### Retrieve data via GET request   
+       Get request to the URL and endpoint returned by Terraform, and the id number of the stored data item appended at the end
+       (ie. https://kfd5dbmxqf.execute-api.us-east-1.amazonaws.com/py-lambda-stage/pet?id=1)
+
 
 ## Contributing
 
