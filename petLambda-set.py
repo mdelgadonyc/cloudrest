@@ -15,29 +15,23 @@ def lambda_handler(event, context):
     print('event: ', json.dumps(event))
     print('event->body: ', json.dumps(event['body']))
 
-    dict = json.loads(event['body'])
+    data = json.loads(event['body'])
 
-# Python AWS Lambda's event body returning string instead of my json object
-# https://stackoverflow.com/questions/70352258/python-aws-lambdas-event-body-returning-string-instead-of-my-json-object
+    print(data)
 
-    
-    # Insomnia (JSON) entered: {"id": "31337", "name": "hashpuppy", "breed": "elite", "gender": "male", "owner": "neo", "birthday": "101011"}
-    
-    print(dict)
-    
     response = table.put_item(
-        Item = {
-            'id': dict['id'],
-            'name': dict['name'],
-            'breed': dict['breed'],
-            'gender': dict['gender'],
-            'owner': dict['owner'],
-            'birthday': dict['birthday']
+        Item={
+            'id': data['id'],
+            'name': data['name'],
+            'breed': data['breed'],
+            'gender': data['gender'],
+            'owner': data['owner'],
+            'birthday': data['birthday']
         }
     )
 
     return {
 
         'statusCode': response['ResponseMetadata']['HTTPStatusCode'],
-        'body': 'Record ' + dict['id'] + ' added'
+        'body': 'Record ' + data['id'] + ' added'
     }
