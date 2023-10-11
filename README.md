@@ -44,6 +44,8 @@ To install CloudRest locally:
        Use Postman to submit a Get request to the URL and endpoint returned by Terraform, and the id number of the stored data item appended at the end
        (ie. https://kfd5dbmxqf.execute-api.us-east-1.amazonaws.com/py-lambda-stage/pet?id=1)
 
+3. #### Terminate AWS services when done to avoid extra charges
+    $ `terraform destroy`  
 
 https://github.com/mdelgadonyc/cloudrest/assets/17136771/5b7b8643-2c3e-4a5e-8d4e-4e1eb1405d0b
 
